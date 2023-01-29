@@ -1,45 +1,59 @@
-import QRCode from 'qrcode'
-import {useState} from 'react'
-import Button from '@mui/material/Button';
-import { TextField } from '@mui/material';
+import React from 'react'
+import SideBar from './components/SideBar'
+import "../src/App.css"
+import {
+	BrowserRouter as Router,
+	Routes,
+	Route,
+	useNavigate
+} from "react-router-dom";
+import Generator from './components/Generator';
+import QrResult from "./components/QrResult"
+import QrScanned from './components/QrScanned';
+import {Menu,} from 'antd'
+import {HomeFilled,QrcodeOutlined,ScanOutlined,InfoCircleFilled,PoweroffOutlined} from "@ant-design/icons"
+
 
 function App() {
-	const [url, setUrl] = useState('')
-	const [qr, setQr] = useState('')
+	const navigate =useNavigate()
+  return (
+		<div style={{display:"flex",flexDirection:"row"}}>
+			<Menu
+				onClick={({key})=>{
+					if(key==="signout"){
+						//sign out
+					}else{
+						navigate(key)
+					}
+				}}
+				items={[
+					{label:
+						"Generate",key:'/',icon:<HomeFilled />
+					},
+					{label:"Qr Code",key:"/qrcodes",icon:<QrcodeOutlined />},
+					{label:"Scanned",key:"/scan",icon:<ScanOutlined />},
+					{label:"About", key:"/about",icon:<InfoCircleFilled />},
+					{label:"Sign out", key:"signout",icon:<PoweroffOutlined />,danger:true}
+				]}
+			>
 
-	const GenerateQRCode = () => {
-		QRCode.toDataURL(url, {
-			width: 800,
-			margin: 2,
-			color: {
-				dark: '#335383FF',
-				light: '#EEEEEEFF'
-			}
-		}, (err, url) => {
-			if (err) return console.error(err)
-
-			console.log(url)
-			setQr(url)
-		})
-	}
-
-	return (
-		<div className="app">
-			<h1>QR Generator</h1>
-      <TextField 
-        placeholder="e.g. https://google.com" id="filled-basic" 
-        label="outlined" variant="outlined" 
-        value={url}
-        onChange={e => setUrl(e.target.value)}
-        style={{margin:10,color:"wheat"}}
-        />  
-			<Button style={{margin:10}} variant="contained" onClick={GenerateQRCode}> Generate</Button>
-			{qr && <>
-				<img src={qr} />
-				<a href={qr} download="qrcode.png">Download</a>
-			</>}
+			</Menu>
+			<Content/>
 		</div>
-	)
+  )
+}
+
+function Content (){
+
+	return <div>
+		<Routes>
+			<Route path='/' element={<div><Generator/></div>}></Route>
+			<Route path='/qrcodes' element={<div>Qr</div>}></Route>
+			<Route path='/scan' element={<div>Scane</div>}></Route>
+			<Route path='/about' element={<div>Details</div>}></Route>
+		</Routes>
+	</div>
 }
 
 export default App
+ 
